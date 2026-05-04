@@ -291,6 +291,60 @@
       letter-spacing: 0.03em;
     }
     .error-banner.active { display: block; }
+
+    /* ─── チェックボックス ─── */
+    .check-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      cursor: pointer;
+    }
+    .check-item input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      appearance: none;
+      -webkit-appearance: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      margin-top: 2px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+      position: relative;
+    }
+    .check-item input[type="checkbox"]:checked {
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+    .check-item input[type="checkbox"]:checked::after {
+      content: '✓';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #0a0a0a;
+      font-size: 13px;
+      font-weight: bold;
+    }
+    .check-item .check-text {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.6;
+      letter-spacing: 0.03em;
+    }
+    .check-note {
+      font-size: 11px;
+      color: #c07070;
+      margin-top: 8px;
+      line-height: 1.7;
+      letter-spacing: 0.03em;
+    }
   </style>
 </head>
 <body>
@@ -399,6 +453,48 @@
 
   <div class="divider"></div>
 
+  <!-- 身分証 -->
+  <div class="form-section">
+    <label class="form-label">顔写真付き身分証（いずれか1点）<span class="required">*</span></label>
+    <div class="check-group">
+      <label class="check-item">
+        <input type="checkbox" id="id_my">
+        <span class="check-text">マイナンバーカード</span>
+      </label>
+      <label class="check-item">
+        <input type="checkbox" id="id_license">
+        <span class="check-text">運転免許証</span>
+      </label>
+    </div>
+    <p class="check-note">
+      ※ 有効期限内の原本に限ります<br>
+      ※ 受付時に身分証と照合します。一致しない場合はご入店いただけません
+    </p>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 確認事項 -->
+  <div class="form-section">
+    <label class="form-label">ご確認事項<span class="required">*</span></label>
+    <div class="check-group">
+      <label class="check-item">
+        <input type="checkbox" id="confirm_age">
+        <span class="check-text">満20歳以上であることに相違ありません</span>
+      </label>
+      <label class="check-item">
+        <input type="checkbox" id="confirm_photo">
+        <span class="check-text">店内での広報目的の撮影（モザイク処理あり）に同意します</span>
+      </label>
+      <label class="check-item">
+        <input type="checkbox" id="confirm_cancel">
+        <span class="check-text">無断キャンセル・大幅な遅刻はご遠慮ください</span>
+      </label>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
 </div>
 
 <!-- 送信ボタン -->
@@ -473,6 +569,17 @@ async function handleSubmit() {
   if (isTuesday(date)) return showError("火曜日は定休日です。別の日付をお選びください。");
   if (!time)  return showError("ご希望時刻をご選択ください。");
   if (female === "0" && male === "0") return showError("人数を1名以上ご入力ください。");
+
+  const idMy      = document.getElementById("id_my").checked;
+  const idLicense = document.getElementById("id_license").checked;
+  const confirmAge    = document.getElementById("confirm_age").checked;
+  const confirmPhoto  = document.getElementById("confirm_photo").checked;
+  const confirmCancel = document.getElementById("confirm_cancel").checked;
+
+  if (!idMy && !idLicense) return showError("身分証の種類をいずれか1点ご選択ください。");
+  if (!confirmAge)    return showError("年齢確認にチェックをお願いします。");
+  if (!confirmPhoto)  return showError("撮影同意にチェックをお願いします。");
+  if (!confirmCancel) return showError("キャンセルポリシーへの同意にチェックをお願いします。");
 
   const btn = document.getElementById("submitBtn");
   btn.disabled = true;
