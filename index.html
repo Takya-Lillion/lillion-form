@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Lillion｜初回限定ご予約</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Noto+Sans+JP:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #e8c97a;
+      --gold-dim: rgba(201,168,76,0.15);
+      --bg: #0a0a0a;
+      --bg2: #111111;
+      --surface: #181818;
+      --border: rgba(201,168,76,0.25);
+      --text: #f0ece4;
+      --text-muted: #888;
+      --error: #e07070;
+      --success: #6db88a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+      padding-bottom: 40px;
+    }
+
+    /* ─── Header ─── */
+    .header {
+      text-align: center;
+      padding: 48px 24px 32px;
+      position: relative;
+    }
+    .header::before {
+      content: '';
+      display: block;
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, transparent, var(--gold));
+      margin: 0 auto 24px;
+    }
+    .header .en-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.35em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      font-weight: 300;
+      font-style: italic;
+      letter-spacing: 0.05em;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .header .sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+    }
+
+    /* ─── Plan Card ─── */
+    .plan-card {
+      margin: 0 20px 32px;
+      border: 1px solid var(--border);
+      background: var(--gold-dim);
+      border-radius: 2px;
+      padding: 20px 24px;
+      text-align: center;
+    }
+    .plan-card .plan-label {
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .plan-card .plan-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px;
+      font-weight: 300;
+      color: var(--gold-light);
+      letter-spacing: 0.02em;
+    }
+    .plan-card .plan-price span {
+      font-size: 16px;
+      margin-left: 4px;
+    }
+    .plan-card .plan-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      letter-spacing: 0.05em;
+    }
+
+    /* ─── Form ─── */
+    .form-wrap {
+      padding: 0 20px;
+    }
+
+    .form-section {
+      margin-bottom: 28px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .form-label .required {
+      color: var(--error);
+      margin-left: 4px;
+      font-size: 12px;
+      letter-spacing: 0;
+    }
+
+    .form-note {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      letter-spacing: 0.03em;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    select {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--text);
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 300;
+      font-size: 15px;
+      padding: 14px 16px;
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+      transition: border-color 0.2s;
+    }
+    input[type="text"]:focus,
+    input[type="date"]:focus,
+    select:focus {
+      border-color: var(--gold);
+    }
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(0.6) sepia(1) saturate(2) hue-rotate(10deg);
+    }
+    select option {
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    /* 人数 行 */
+    .count-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .count-item label {
+      display: block;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      letter-spacing: 0.1em;
+    }
+
+    /* 注意書き */
+    .notice-box {
+      margin: 0 20px 28px;
+      border: 1px solid rgba(224,112,112,0.3);
+      background: rgba(224,112,112,0.06);
+      border-radius: 2px;
+      padding: 14px 16px;
+    }
+    .notice-box p {
+      font-size: 11px;
+      color: #c07070;
+      line-height: 1.8;
+      letter-spacing: 0.03em;
+    }
+
+    /* 送信ボタン */
+    .submit-btn {
+      display: block;
+      width: calc(100% - 40px);
+      margin: 0 20px;
+      padding: 18px;
+      background: linear-gradient(135deg, #c9a84c, #e8c97a, #c9a84c);
+      background-size: 200% 200%;
+      border: none;
+      border-radius: 2px;
+      color: #0a0a0a;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: 0.25em;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+      animation: shimmer 3s ease infinite;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .submit-btn:active {
+      transform: scale(0.98);
+      opacity: 0.9;
+    }
+    .submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      animation: none;
+    }
+
+    /* ─── Divider ─── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--border), transparent);
+      margin: 0 20px 28px;
+    }
+
+    /* ─── Overlay / Toast ─── */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 32px;
+    }
+    .overlay.active { display: flex; }
+
+    .overlay-icon {
+      font-size: 48px;
+      margin-bottom: 24px;
+    }
+    .overlay-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-style: italic;
+      color: var(--gold-light);
+      margin-bottom: 12px;
+    }
+    .overlay-msg {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.9;
+      letter-spacing: 0.05em;
+    }
+
+    .loading-ring {
+      width: 48px;
+      height: 48px;
+      border: 2px solid var(--border);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 20px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .error-banner {
+      display: none;
+      margin: 0 20px 20px;
+      padding: 12px 16px;
+      background: rgba(224,112,112,0.1);
+      border: 1px solid rgba(224,112,112,0.4);
+      border-radius: 2px;
+      font-size: 12px;
+      color: var(--error);
+      letter-spacing: 0.03em;
+    }
+    .error-banner.active { display: block; }
+  </style>
+</head>
+<body>
+
+<!-- ヘッダー -->
+<div class="header">
+  <div class="en-title">First Visit Reservation</div>
+  <h1>Lillion</h1>
+  <div class="sub">初回限定ご予約フォーム</div>
+</div>
+
+<!-- プランカード -->
+<div class="plan-card">
+  <div class="plan-label">LINE初回限定窓口 特別プラン</div>
+  <div class="plan-price">¥3,000<span>／60分</span></div>
+  <div class="plan-desc">焼酎・割り物・缶物 飲み放題</div>
+</div>
+
+<!-- 注意書き -->
+<div class="notice-box">
+  <p>
+    ※ 男性のお客様は初回料金の適用がございません。<br>
+    ※ ご来店の際は顔写真付き身分証明書をご持参ください。<br>
+    ※ 火曜日は定休日です。<br>
+    ※ 予約受付時間：20:00〜22:00
+  </p>
+</div>
+
+<!-- エラーバナー -->
+<div class="error-banner" id="errorBanner"></div>
+
+<!-- フォーム -->
+<div class="form-wrap">
+
+  <!-- お名前 -->
+  <div class="form-section">
+    <label class="form-label">お名前（予約名）<span class="required">*</span></label>
+    <input type="text" id="name" placeholder="山田 太郎" autocomplete="name">
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 希望日 -->
+  <div class="form-section">
+    <label class="form-label">ご希望日<span class="required">*</span></label>
+    <input type="date" id="date" id="date">
+    <p class="form-note">※ 火曜日は定休日となっております</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 希望時刻 -->
+  <div class="form-section">
+    <label class="form-label">ご希望時刻<span class="required">*</span></label>
+    <select id="time">
+      <option value="">選択してください</option>
+      <option value="20:00">20:00</option>
+      <option value="20:15">20:15</option>
+      <option value="20:30">20:30</option>
+      <option value="20:45">20:45</option>
+      <option value="21:00">21:00</option>
+      <option value="21:15">21:15</option>
+      <option value="21:30">21:30</option>
+      <option value="21:45">21:45</option>
+      <option value="22:00">22:00</option>
+    </select>
+    <p class="form-note">予約受付時間：20:00〜22:00（15分単位）</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 人数 -->
+  <div class="form-section">
+    <label class="form-label">人数<span class="required">*</span></label>
+    <div class="count-row">
+      <div class="count-item">
+        <label>女性</label>
+        <select id="female">
+          <option value="0">0名</option>
+          <option value="1">1名</option>
+          <option value="2">2名</option>
+          <option value="3">3名</option>
+          <option value="4">4名</option>
+          <option value="5">5名</option>
+          <option value="6">6名</option>
+          <option value="7">7名</option>
+          <option value="8">8名</option>
+        </select>
+      </div>
+      <div class="count-item">
+        <label>男性</label>
+        <select id="male">
+          <option value="0">0名</option>
+          <option value="1">1名</option>
+          <option value="2">2名</option>
+          <option value="3">3名</option>
+          <option value="4">4名</option>
+          <option value="5">5名</option>
+          <option value="6">6名</option>
+          <option value="7">7名</option>
+          <option value="8">8名</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+</div>
+
+<!-- 送信ボタン -->
+<button class="submit-btn" id="submitBtn" onclick="handleSubmit()">ご予約を送信する</button>
+
+<!-- ローディング -->
+<div class="overlay" id="loadingOverlay">
+  <div class="loading-ring"></div>
+  <div style="font-size:13px;color:var(--text-muted);letter-spacing:0.1em;">送信中...</div>
+</div>
+
+<!-- 完了 -->
+<div class="overlay" id="successOverlay">
+  <div class="overlay-icon">✦</div>
+  <div class="overlay-title">ご予約を承りました</div>
+  <div class="overlay-msg">
+    ご予約内容を確認のうえ、<br>
+    担当者よりLINEにてご連絡いたします。<br><br>
+    <span style="color:var(--gold);font-size:11px;">お気軽にお待ちくださいませ</span>
+  </div>
+</div>
+
+<script>
+// ============================================================
+//  ★ ここを自分の設定に書き換えてください ★
+// ============================================================
+const CONFIG = {
+  LIFF_ID:         "2009971058-RSPol6cK",
+  NOTION_TOKEN:    "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",
+  NOTION_DB_ID:    "356535c5e6a180a1943fdda57fe6172d"
+};
+// ============================================================
+
+// LIFF 初期化
+liff.init({ liffId: CONFIG.LIFF_ID }).catch(e => console.warn("LIFF init failed:", e));
+
+// 日付の最小値を今日に設定
+document.addEventListener("DOMContentLoaded", () => {
+  const dateInput = document.getElementById("date");
+  const today = new Date().toISOString().split("T")[0];
+  dateInput.min = today;
+});
+
+function showError(msg) {
+  const el = document.getElementById("errorBanner");
+  el.textContent = msg;
+  el.classList.add("active");
+  el.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+function hideError() {
+  document.getElementById("errorBanner").classList.remove("active");
+}
+
+// 火曜チェック
+function isTuesday(dateStr) {
+  if (!dateStr) return false;
+  const d = new Date(dateStr + "T00:00:00");
+  return d.getDay() === 2;
+}
+
+async function handleSubmit() {
+  hideError();
+  const name   = document.getElementById("name").value.trim();
+  const date   = document.getElementById("date").value;
+  const time   = document.getElementById("time").value;
+  const female = document.getElementById("female").value;
+  const male   = document.getElementById("male").value;
+
+  // バリデーション
+  if (!name)  return showError("お名前をご入力ください。");
+  if (!date)  return showError("ご希望日をご選択ください。");
+  if (isTuesday(date)) return showError("火曜日は定休日です。別の日付をお選びください。");
+  if (!time)  return showError("ご希望時刻をご選択ください。");
+  if (female === "0" && male === "0") return showError("人数を1名以上ご入力ください。");
+
+  const btn = document.getElementById("submitBtn");
+  btn.disabled = true;
+  document.getElementById("loadingOverlay").classList.add("active");
+
+  const dateLabel = formatDate(date);
+  const summary   = `【予約】${name} 様｜${dateLabel} ${time}｜女性${female}名・男性${male}名`;
+
+  try {
+    // 1. Notion に保存
+    await sendToNotion({ name, date, dateLabel, time, female, male });
+
+    // 2. LINE トークに送信
+    const lineMsg = `✦ ご予約を承りました ✦\n\n` +
+      `■ 予約名：${name} 様\n` +
+      `■ 日時：${dateLabel}（${time}〜）\n` +
+      `■ 人数：女性 ${female}名 / 男性 ${male}名\n\n` +
+      `担当者より確認のご連絡をいたします。\nしばらくお待ちくださいませ🙏`;
+
+    if (liff.isInClient()) {
+      await liff.sendMessages([{ type: "text", text: lineMsg }]);
+    }
+
+    document.getElementById("loadingOverlay").classList.remove("active");
+    document.getElementById("successOverlay").classList.add("active");
+
+    // 3秒後にLIFF画面を閉じる
+    setTimeout(() => {
+      if (liff.isInClient()) liff.closeWindow();
+    }, 3000);
+
+  } catch(err) {
+    document.getElementById("loadingOverlay").classList.remove("active");
+    btn.disabled = false;
+    showError("送信中にエラーが発生しました。時間をおいて再度お試しください。");
+    console.error(err);
+  }
+}
+
+async function sendToNotion({ name, date, dateLabel, time, female, male }) {
+  const res = await fetch("https://api.notion.com/v1/pages", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${CONFIG.NOTION_TOKEN}`,
+      "Content-Type":  "application/json",
+      "Notion-Version": "2022-06-28"
+    },
+    body: JSON.stringify({
+      parent: { database_id: CONFIG.NOTION_DB_ID },
+      properties: {
+        "予約名":   { title:  [{ text: { content: name } }] },
+        "希望日":   { date:   { start: date } },
+        "希望時刻": { rich_text: [{ text: { content: time } }] },
+        "女性人数": { number: parseInt(female) },
+        "男性人数": { number: parseInt(male) },
+        "ステータス": { select: { name: "未確認" } },
+        "受付日時": { date: { start: new Date().toISOString() } }
+      }
+    })
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Notion API error: ${res.status} ${body}`);
+  }
+  return res.json();
+}
+
+function formatDate(dateStr) {
+  const d = new Date(dateStr + "T00:00:00");
+  const days = ["日","月","火","水","木","金","土"];
+  return `${d.getMonth()+1}月${d.getDate()}日（${days[d.getDay()]}）`;
+}
+</script>
+</body>
+</html>
