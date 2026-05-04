@@ -482,19 +482,15 @@ async function handleSubmit() {
   const summary   = `【予約】${name} 様｜${dateLabel} ${time}｜女性${female}名・男性${male}名`;
 
   try {
-    // 1. Notion に保存
-    await sendToNotion({ name, date, dateLabel, time, female, male });
-
-    // 2. LINE トークに送信
-    const lineMsg = `✦ ご予約を承りました ✦\n\n` +
-      `■ 予約名：${name} 様\n` +
-      `■ 日時：${dateLabel}（${time}〜）\n` +
-      `■ 人数：女性 ${female}名 / 男性 ${male}名\n\n` +
-      `担当者より確認のご連絡をいたします。\nしばらくお待ちくださいませ🙏`;
-
+    // User IDを取得
+    let userId = null;
     if (liff.isInClient()) {
-      await liff.sendMessages([{ type: "text", text: lineMsg }]);
+      const profile = await liff.getProfile();
+      userId = profile.userId;
     }
+
+    // 1. Notion に保存 + LINE通知
+    await sendToNotion({ name, date, dateLabel, time, female, male, userId });
 
     document.getElementById("loadingOverlay").classList.remove("active");
     document.getElementById("successOverlay").classList.add("active");
@@ -512,11 +508,11 @@ async function handleSubmit() {
   }
 }
 
-async function sendToNotion({ name, date, dateLabel, time, female, male }) {
+async function sendToNotion({ name, date, dateLabel, time, female, male, userId }) {
   const res = await fetch("https://notion-proxy.428pon.workers.dev", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, date, time, female, male })
+    body: JSON.stringify({ name, date, time, female, male, userId })
   });
   if (!res.ok) {
     const body = await res.text();
